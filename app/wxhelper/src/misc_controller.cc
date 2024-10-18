@@ -10,6 +10,7 @@ namespace jsonutils = wxhelper::jsonutils;
 
 namespace wxhelper {
 std::string MiscController::CheckLogin(std::string params) {
+  SPDLOG_INFO("CheckLogin");
   int64_t success = wechat::WeChatService::GetInstance().CheckLogin();
   nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
   return ret.dump();

@@ -51,15 +51,19 @@ wechat::WeChatService::~WeChatService() {}
 void wechat::WeChatService::Init() { base_addr_ = wxutils::GetWeChatWinBase(); }
 
 int64_t wechat::WeChatService::CheckLogin() {
+    SPDLOG_INFO("CheckLogin1");
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
+  SPDLOG_INFO("CheckLogin2");
   auto GetSevice =
       base::CastFunction<__GetAccountService>(resolver, kGetAccountServiceMgr);
-
+  SPDLOG_INFO("CheckLogin3");
   uint64_t service_addr = GetSevice();
+  SPDLOG_INFO("CheckLogin4");
   if (service_addr) {
     success = *(uint64_t*)(service_addr + 0x7F8);
   }
+  SPDLOG_INFO("CheckLogin5");
   return success;
 }
 
@@ -560,7 +564,7 @@ int64_t wechat::WeChatService::RemoveTopMsg(const std::wstring& room_id,
                            reinterpret_cast<UINT64>(chat_room_id));
   return success;
 }
-TODO("InviteMemberToChatRoom")
+
 int64_t wechat::WeChatService::InviteMemberToChatRoom(
     const std::wstring& room_id, const std::vector<std::wstring>& wxids) {
     int64_t success = -1;
@@ -583,7 +587,7 @@ int64_t wechat::WeChatService::InviteMemberToChatRoom(
   return success;
 }
 
-TODO("CreateChatRoom")
+
 int64_t wechat::WeChatService::CreateChatRoom(
     const std::vector<std::wstring>& wxids) {
   int64_t success = -1;
@@ -606,7 +610,7 @@ int64_t wechat::WeChatService::CreateChatRoom(
   return success;
 }
 
-TODO("QuitChatRoom")
+
 int64_t wechat::WeChatService::QuitChatRoom(const std::wstring& room_id) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
@@ -642,7 +646,7 @@ int64_t wechat::WeChatService::ForwardMsg(uint64_t msg_id,
   return success;
 }
 
-TODO("GetSNSFirstPage")
+
 int64_t wechat::WeChatService::GetSNSFirstPage() {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
@@ -656,7 +660,7 @@ int64_t wechat::WeChatService::GetSNSFirstPage() {
   return success;
 }
 
-TODO("GetSNSNextPage")
+
 int64_t wechat::WeChatService::GetSNSNextPage(uint64_t sns_id) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
@@ -768,7 +772,7 @@ int64_t wechat::WeChatService::SendAtText(
   free(reinterpret_cast<uint64_t>(&chat_msg));
   return 0;
 }
-TODO("GetContactOrChatRoomNickname")
+
 std::wstring wechat::WeChatService::GetContactOrChatRoomNickname(
     const std::wstring& wxid) {
   int64_t success = -1;
@@ -818,7 +822,7 @@ int64_t wechat::WeChatService::GetContactByWxid(const std::wstring& wxid,
   return success;
 }
 
-TODO("DoDownloadTask")
+
 int64_t wechat::WeChatService::DoDownloadTask(uint64_t msg_id) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
@@ -936,7 +940,7 @@ int64_t wechat::WeChatService::DoDownloadTask(uint64_t msg_id) {
   return success;
 }
 
-TODO("ForwardPublicMsg")
+
 int64_t wechat::WeChatService::ForwardPublicMsg(const std::wstring& wxid,
                                                 const std::wstring& title,
                                                 const std::wstring& url,
@@ -947,12 +951,12 @@ int64_t wechat::WeChatService::ForwardPublicMsg(const std::wstring& wxid,
   return 0;
 }
 
-TODO("ForwardPublicMsgByMsgId")
+
 int64_t wechat::WeChatService::ForwardPublicMsgByMsgId(const std::wstring& wxid,
                                                        uint64_t msg_id) {
   return 0;
 }
-TODO("DecodeImage")
+
 int64_t wechat::WeChatService::DecodeImage(const std::wstring& file_path,
                                            const std::wstring& save_dir) {
   if (!wxutils::FindOrCreateDirectory(save_dir)) {
@@ -1028,12 +1032,12 @@ int64_t wechat::WeChatService::DecodeImage(const std::wstring& file_path,
   CloseHandle(save_img);
   return 1;
 }
-TODO("GetVoiceByDB")
+
 int64_t wechat::WeChatService::GetVoiceByDB(ULONG64 msg_id,
                                             const std::wstring& dir) {
   return 0;
 }
-TODO("SendCustomEmotion")
+
 int64_t wechat::WeChatService::SendCustomEmotion(const std::wstring& file_path,
                                                  const std::wstring& wxid) {
   int64_t success = -1;
@@ -1055,7 +1059,7 @@ int64_t wechat::WeChatService::SendCustomEmotion(const std::wstring& file_path,
   return success;
 }
 
-TODO("SendApplet")
+
 int64_t wechat::WeChatService::SendApplet(
     const std::wstring& recv_wxid, const std::wstring& waid_suff,
     const std::wstring& waid_w, const std::wstring& waid_s,
@@ -1159,7 +1163,7 @@ int64_t wechat::WeChatService::SendPatMsg(const std::wstring& room_id,
   return success;
 }
 
-TODO("DoOCRTask")
+
 int64_t wechat::WeChatService::DoOCRTask(const std::wstring& img_path,
                                          std::string& result) {
   int64_t success = -1;
@@ -1235,7 +1239,7 @@ int64_t wechat::WeChatService::EnterWeChat() {
   return success;
 }
 
-TODO("SendMultiAtText")
+
 int64_t wechat::WeChatService::SendMultiAtText(
     const std::wstring& room_id,
     const std::vector<std::pair<std::wstring, std::wstring>>& at) {
@@ -1299,7 +1303,7 @@ void wechat::WeChatService::SetJsApiAddr(uint64_t addr) {
   this->js_api_addr_ = addr;
 }
 
-TODO("TranslateVoice")
+
 int64_t wechat::WeChatService::TranslateVoice(uint64_t msg_id) {
   int64_t success = -1;
 
@@ -1347,7 +1351,7 @@ int64_t wechat::WeChatService::TranslateVoice(uint64_t msg_id) {
   return success;
 }
 
-TODO("GetTranslateVoiceText")
+
 std::string wechat::WeChatService::GetTranslateVoiceText(uint64_t msg_id) {
   std::string content =
       wechat::WeChatDb::GetInstance().GetChatMsgStrContentByMsgId(msg_id);
@@ -1370,7 +1374,7 @@ std::string wechat::WeChatService::GetTranslateVoiceText(uint64_t msg_id) {
   return "";
 }
 
-TODO("OpenUrlByWeChatBrowser")
+
 int64_t wechat::WeChatService::OpenUrlByWeChatBrowser(const std::wstring& url,
                                                       int flag) {
   int64_t success = -1;
@@ -1400,13 +1404,13 @@ int64_t wechat::WeChatService::OpenUrlByWeChatBrowser(const std::wstring& url,
   return success;
 }
 
-TODO("GetChatRoomMemberNickname")
+
 std::wstring wechat::WeChatService::GetChatRoomMemberNickname(
     const std::wstring& room_id, const std::wstring& member_id) {
   return std::wstring();
 }
 
-TODO("DelContact")
+
 int64_t wechat::WeChatService::DelContact(const std::wstring& wxid) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
@@ -1415,7 +1419,7 @@ int64_t wechat::WeChatService::DelContact(const std::wstring& wxid) {
   return success;
 }
 
-TODO("SearchContact")
+
 int64_t wechat::WeChatService::SearchContact(
     const std::wstring& keyword, wechat::SearchContactInner& contact) {
   int64_t success = -1;
@@ -1430,7 +1434,7 @@ int64_t wechat::WeChatService::SearchContact(
   return success;
 }
 
-TODO("AddFriendByWxid")
+
 int64_t wechat::WeChatService::AddFriendByWxid(const std::wstring& wxid,
                                                const std::wstring& msg) {
   base::FunctionResolver resolver(base_addr_);
@@ -1438,7 +1442,7 @@ int64_t wechat::WeChatService::AddFriendByWxid(const std::wstring& wxid,
   return 0;
 }
 
-TODO("VerifyApply")
+
 int64_t wechat::WeChatService::VerifyApply(const std::wstring& v3,
                                            const std::wstring& v4,
                                            int32_t permission) {
@@ -1447,7 +1451,7 @@ int64_t wechat::WeChatService::VerifyApply(const std::wstring& v3,
   return 0;
 }
 
-TODO("DoConfirmReceipt")
+
 int64_t wechat::WeChatService::DoConfirmReceipt(
     const std::wstring& wxid, const std::wstring& transcationid,
     const std::wstring& transferid) {
@@ -1476,7 +1480,7 @@ int64_t wechat::WeChatService::DoConfirmReceipt(
   return success;
 }
 
-TODO("DoRefuseReceipt")
+
 int64_t wechat::WeChatService::DoRefuseReceipt(
     const std::wstring& wxid, const std::wstring& transcationid,
     const std::wstring& transferid) {

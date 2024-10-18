@@ -1,7 +1,7 @@
 ﻿#include "config.h"
 
 #include <Windows.h>
-
+#include <shlobj.h>
 #include "spdlog/sinks/daily_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -10,9 +10,18 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 namespace wxhelper {
 
+// 获取用户目录
+std::string GetUserDirectory() {
+    TCHAR path[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, path))) {
+        return std::string(path) + "\\wxhelper_logs\\";
+    }
+    return ".\\wxhelper_logs\\";  // 如果获取失败，使用当前目录作为回退方案
+}
+
 void Config::init() {
-  auto logger =
-      spdlog::daily_logger_mt("daily_logger", "logs/daily.txt", 23, 59);
+    std::string log_path = GetUserDirectory() + "daily.txt";
+    auto logger = spdlog::daily_logger_mt("daily_logger", log_path, 23, 59);
   logger->flush_on(spdlog::level::err);
   spdlog::set_default_logger(logger);
   spdlog::flush_every(std::chrono::seconds(3));
