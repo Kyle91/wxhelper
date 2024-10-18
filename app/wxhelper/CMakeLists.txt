@@ -2,6 +2,8 @@
 project(wxhelper VERSION 1.0.0)
 # enable_language(ASM_MASM)
 # add_compile_options("/experimental:module")
+add_compile_options("/utf-8")
+
 
 message(${CMAKE_VERSION})
 

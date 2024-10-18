@@ -403,6 +403,8 @@ int64_t wechat::WeChatService::GetChatRoomDetailInfo(
       base::CastFunction<__FreeChatRoomInfo>(resolver, kFreeChatRoomInfo);
   auto get_chat_room_detail = base::CastFunction<__GetChatRoomDetailInfo>(
       resolver, kGetChatRoomDetailInfo);
+  auto get_chat_room_mgr =
+      base::CastFunction<__GetChatRoomMgr>(resolver, kChatRoomMgr);
 
   WeChatString chat_room_id(room_id);
 
@@ -470,7 +472,7 @@ int64_t wechat::WeChatService::ModChatRoomMemberNickName(
   WeChatString* chat_room_id = BuildWechatString(room_id);
   WeChatString* self_id = BuildWechatString(wxid);
   WeChatString* name = BuildWechatString(nickname);
-  success = modify(
+  success = mod_addr(
       reinterpret_cast<UINT64>(p), reinterpret_cast<UINT64>(chat_room_id),
       reinterpret_cast<UINT64>(self_id), reinterpret_cast<UINT64>(name));
   return success;
@@ -561,7 +563,8 @@ int64_t wechat::WeChatService::RemoveTopMsg(const std::wstring& room_id,
 TODO("InviteMemberToChatRoom")
 int64_t wechat::WeChatService::InviteMemberToChatRoom(
     const std::wstring& room_id, const std::vector<std::wstring>& wxids) {
-  int64_t success = -1 base::FunctionResolver resolver(base_addr_);
+    int64_t success = -1;
+    base::FunctionResolver resolver(base_addr_);
   auto invite =
       base::CastFunction<__InviteMemberToChatRoom>(resolver, kInviteMember);
   const wchar_t* w_room = room_id.c_str();
@@ -621,7 +624,7 @@ int64_t wechat::WeChatService::ForwardMsg(uint64_t msg_id,
                                           const std::wstring& wxid) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
-  auto get_chat_room_mgr =
+  auto forward_msg =
       base::CastFunction<__ForwardMsg>(resolver, kForwardMsg);
   int64_t index = 0;
   int64_t local_id =
@@ -658,7 +661,7 @@ int64_t wechat::WeChatService::GetSNSNextPage(uint64_t sns_id) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
   auto time_line_mgr =
-      base::CastFunction<__GetSnsTimeLineMgr>(resolver, time_line_mgr_addr);
+      base::CastFunction<__GetSnsTimeLineMgr>(resolver, kSNSTimeLineMgr);
   auto sns_next_page =
       base::CastFunction<__GetSNSNextPageScene>(resolver, kSNSGetNextPageScene);
   uint64_t mgr = time_line_mgr();
@@ -705,15 +708,19 @@ int64_t wechat::WeChatService::AddFavFromImage(const std::wstring& wxid,
                                                const std::wstring& image_path) {
   int64_t success = -1;
   base::FunctionResolver resolver(base_addr_);
-  auto get_favorite_mgr_addr =
+  auto get_favorite_mgr =
       base::CastFunction<__GetFavoriteMgr>(resolver, kGetFavoriteMgr);
   auto add_fav_from_image =
       base::CastFunction<__AddFavFromImage>(resolver, kAddFavFromImage);
+  prototype::WeChatString* send_id = BuildWechatString(wxid);
+  prototype::WeChatString* path = BuildWechatString(image_path);
   uint64_t mgr = get_favorite_mgr();
   success = add_fav_from_image(mgr, reinterpret_cast<uint64_t>(path),
                                reinterpret_cast<uint64_t>(send_id));
   return success;
 }
+
+
 int64_t wechat::WeChatService::SendAtText(
     const std::wstring& room_id, const std::vector<std::wstring>& wxids,
     const std::wstring& msg) {
@@ -753,6 +760,7 @@ int64_t wechat::WeChatService::SendAtText(
       base::CastFunction<__GetSendMessageMgr>(resolver, kGetSendMessageMgr);
   auto send = base::CastFunction<__SendTextMsg>(resolver, kSendTextMsg);
   auto free = base::CastFunction<__FreeChatMsg>(resolver, kFreeChatMsg);
+  char chat_msg[0x460] = { 0 };
   mgr();
   success = send(reinterpret_cast<uint64_t>(&chat_msg),
                  reinterpret_cast<uint64_t>(&to_user),
@@ -1215,10 +1223,10 @@ int64_t wechat::WeChatService::EnterWeChat() {
   base::FunctionResolver resolver(base_addr_);
   auto cb = base::CastFunction<__OnLoginBtnClick>(resolver, kOnLoginBtnClick);
   auto vec =
-      base::memory::ScanAndMatchValue(base_addr + 0x4ecedf8, 0x1000, 0x8);
+      base::memory::ScanAndMatchValue(base_addr_ + 0x4ecedf8, 0x1000, 0x8);
   for (int i = 0; i < vec.size(); i++) {
     int64_t ptr = vec.at(i);
-    if (*(int64_t*)ptr == base_addr + 0x4ecedf8) {
+    if (*(int64_t*)ptr == base_addr_ + 0x4ecedf8) {
       int64_t login_wnd = ptr;
       success = cb(ptr);
       break;

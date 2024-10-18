@@ -11,12 +11,11 @@ namespace wxhelper {
 
 std::string ChatController::SendTextMsg(std::string params) {
   nlohmann::json jp = nlohmann::json::parse(params);
-  SPDLOG_INFO("sendTextMsg wxid={},msg={}", jp["wxid"], jp["msg"]);
+  SPDLOG_INFO("sendTextMsg params={}", params);
   std::wstring wxid = jsonutils::GetWStringParam(jp, "wxid");
   std::wstring msg = jsonutils::GetWStringParam(jp, "msg");
   int64_t success = wechat::WeChatService::GetInstance().SendTextMsg(wxid, msg);
-  nlohmann::json ret_data = {
-      {"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret_data = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret_data.dump();
 }
 
@@ -27,7 +26,7 @@ std::string ChatController::SendImageMsg(std::string params) {
   std::wstring image_path = jsonutils::GetWStringParam(jp, "imagePath");
   int64_t success =
       wechat::WeChatService::GetInstance().SendImageMsg(wxid, image_path);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -38,7 +37,7 @@ std::string ChatController::SendFileMsg(std::string params) {
   std::wstring file_path = jsonutils::GetWStringParam(jp, "filePath");
   int64_t success =
       wechat::WeChatService::GetInstance().SendFileMsg(wxid, file_path);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -50,7 +49,7 @@ std::string ChatController::SendAtText(std::string params) {
   std::wstring msg = jsonutils::GetWStringParam(jp, "msg");
   int64_t success =
       wechat::WeChatService::GetInstance().SendAtText(chat_room_id, wxids, msg);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -68,7 +67,7 @@ std::string ChatController::SendMultiAtText(std::string params) {
   std::wstring chat_room_id = jsonutils::GetWStringParam(jp, "chatRoomId");
   int64_t success =
       wechat::WeChatService::GetInstance().SendMultiAtText(chat_room_id, at);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -80,11 +79,10 @@ std::string ChatController::SendCustomEmotion(std::string params) {
   std::wstring file_path = jsonutils::GetWStringParam(jp, "filePath");
   int64_t success =
       wechat::WeChatService::GetInstance().SendCustomEmotion(file_path, wxid);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
-TODO("")
 std::string ChatController::SendApplet(std::string params) {
   SPDLOG_INFO("SendApplet params={}", params);
   nlohmann::json jp = nlohmann::json::parse(params);
@@ -99,7 +97,7 @@ std::string ChatController::SendApplet(std::string params) {
   int64_t success = wechat::WeChatService::GetInstance().SendApplet(
       wxid, waid_concat, waid, waid, app_wxid, json_param, head_url, main_img,
       index_page);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -111,7 +109,7 @@ std::string ChatController::SendPatMsg(std::string params) {
   int64_t success =
       wechat::WeChatService::GetInstance().SendPatMsg(room_id, wxid);
   nlohmann::json ret_data = {
-      {"code", success}, {"msg", "success"}, {"data", {}}};
+      {"code", static_cast<int>(success)}, {"msg", "success"}, {"data", {}}};
   return ret_data.dump();
 }
 
@@ -122,7 +120,7 @@ std::string ChatController::ForwardMsg(std::string params) {
   int64_t msg_id = jsonutils::GetInt64Param(jp, "msgId");
   int64_t success =
       wechat::WeChatService::GetInstance().ForwardMsg(msg_id, wxid);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -136,7 +134,7 @@ std::string ChatController::ForwardPublicMsgByMsgId(std::string params) {
       wechat::WeChatService::GetInstance().ForwardPublicMsgByMsgId(wxid,
                                                                    msg_id);
 
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -150,9 +148,9 @@ std::string ChatController::ForwardPublicMsg(std::string params) {
   std::wstring url = jsonutils::GetWStringParam(jp, "url");
   std::wstring thumburl = jsonutils::GetWStringParam(jp, "thumbUrl");
   std::wstring digest = jsonutils::GetWStringParam(jp, "digest");
-  INT64 success = wechat::WeChatService::GetInstance().ForwardPublicMsg(
+  int64_t  success = wechat::WeChatService::GetInstance().ForwardPublicMsg(
       wxid, title, url, thumburl, username, appname, digest);
-  nlohmann::json ret = {{"code", success}, {"data", {}}, {"msg", "success"}};
+  nlohmann::json ret = {{"code", static_cast<int>(success)}, {"data", {}}, {"msg", "success"}};
   return ret.dump();
 }
 
@@ -163,8 +161,9 @@ std::string ChatController::GetContactOrChatRoomNickname(std::string params) {
   std::wstring wxid = jsonutils::GetWStringParam(jp, "wxid");
   std::wstring nickname =
       wechat::WeChatService::GetInstance().GetContactOrChatRoomNickname(wxid);
+  success = (nickname.empty()) ? -1 : 0;  // 根据 nickname 是否为空设置 success
   nlohmann::json ret = {
-      {"code", success}, {"data", {"nickname", nickname}}, {"msg", "success"}};
+      {"code", static_cast<int>(success)}, {"data", {"nickname", nickname}}, {"msg", "success"}};
 
   return ret.dump();
 }

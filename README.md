@@ -60,6 +60,7 @@ cmake
 vcpkg
 #### 编译构建
 ```
+这里两步都执行一下，即下载源码，用vcpkg安装库
 cd wxhelper/app/3rdparty
 git clone https://github.com/microsoft/Detours.git  
 git clone https://github.com/gabime/spdlog.git 
@@ -75,6 +76,12 @@ copy detours.cmake  wxhelper/app/3rdparty/Detours/CMakeLists.txt
 cd wxhelper  
 mkdir build  
 cd build  
+
+这里我的命令是这样的，用x64 Native Tools Command Prompt命令行
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=E:/cpp_projects/wxhelper/install/x64-Release -DCMAKE_TOOLCHAIN_FILE:FILEPATH=E:/cpp_projects/vcpkg/scripts/buildsystems/vcpkg.cmake -S E:/cpp_projects/wxhelper -B E:/cpp_projects/wxhelper/build/x64-Release -G Ninja 
+然后
+cmake --build E:\cpp_projects\wxhelper\build\x64-Release\
+
 cmake -DCMAKE_C_COMPILER=cl.exe  \
 -DCMAKE_CXX_COMPILER=cl.exe \
 -DCMAKE_ASM_MASM_COMPILER=ml64.exe \

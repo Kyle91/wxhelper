@@ -9,8 +9,8 @@
 namespace wxhelper {
 std::string ChatRoomController::GetChatRoomDetailInfo(std::string params) {
   nlohmann::json jp = nlohmann::json::parse(params);
-  SPDLOG_INFO("GetChatRoomDetailInfo chatRoomId={}", jp["chatRoomId"]);
   std::wstring room_id = jsonutils::GetWStringParam(jp, "chatRoomId");
+  SPDLOG_INFO("GetChatRoomDetailInfo params={}", params);
   wechat::ChatRoomInfoInner chat_room_detail;
   int64_t success = wechat::WeChatService::GetInstance().GetChatRoomDetailInfo(
       room_id, chat_room_detail);
@@ -27,8 +27,8 @@ std::string ChatRoomController::GetChatRoomDetailInfo(std::string params) {
 }
 std::string ChatRoomController::GetMemberFromChatRoom(std::string params) {
   nlohmann::json jp = nlohmann::json::parse(params);
-  SPDLOG_INFO("GetMemberFromChatRoom chatRoomId={}", jp["chatRoomId"]);
   std::wstring room_id = jsonutils::GetWStringParam(jp, "chatRoomId");
+  SPDLOG_INFO("GetMemberFromChatRoom params={}", params);
   wechat::ChatRoomMemberInner member;
   int64_t success = wechat::WeChatService::GetInstance().GetMemberFromChatRoom(
       room_id, member);
@@ -48,8 +48,7 @@ std::string ChatRoomController::GetMemberFromChatRoom(std::string params) {
 }
 std::string ChatRoomController::AddMemberToChatRoom(std::string params) {
   nlohmann::json jp = nlohmann::json::parse(params);
-  SPDLOG_INFO("AddMemberToChatRoom chatRoomId={},memberIds={}",
-              jp["chatRoomId"], jp["memberIds"]);
+  SPDLOG_INFO("AddMemberToChatRoom params={}", params);
   std::wstring room_id = jsonutils::GetWStringParam(jp, "chatRoomId");
   std::vector<std::wstring> wxids = jsonutils::GetArrayParam(jp, "memberIds");
   std::vector<std::wstring> wxid_list;
@@ -63,8 +62,7 @@ std::string ChatRoomController::AddMemberToChatRoom(std::string params) {
 }
 std::string ChatRoomController::DelMemberFromChatRoom(std::string params) {
   nlohmann::json jp = nlohmann::json::parse(params);
-  SPDLOG_INFO("DelMemberFromChatRoom chatRoomId={},memberIds={}",
-              jp["chatRoomId"], jp["memberIds"]);
+  SPDLOG_INFO("DelMemberFromChatRoom params={}", params);
   std::wstring room_id = jsonutils::GetWStringParam(jp, "chatRoomId");
   std::vector<std::wstring> wxids = jsonutils::GetArrayParam(jp, "memberIds");
   std::vector<std::wstring> wxid_list;
